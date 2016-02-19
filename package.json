@@ -1,6 +1,6 @@
 {
   "name": "@etianen/set",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Helpers for using unique sorted arrays as sets.",
   "main": "./lib/index.js",
   "scripts": {
