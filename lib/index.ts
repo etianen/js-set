@@ -1,18 +1,5 @@
 export function add<V>(set: Array<V>, key: V): Array<V> {
     let len = set.length;
-    // Perform simple merges.
-    if (len === 0) {
-        return [key];
-    }
-    if (key < set[0]) {
-        const result = [key];
-        result.push.apply(result, set);
-        return result;
-    }
-    if (key > set[0]) {
-        return set.concat(key);
-    }
-    // Perform a more expensive merge.
     const result: Array<V> = [];
     let index: number = 0;
     for (; index < len; index++) {
@@ -25,8 +12,12 @@ export function add<V>(set: Array<V>, key: V): Array<V> {
         }
         result.push(value);
     }
-    for (; index < len; index++) {
-        result.push(set[index]);
+    if (index === len) {
+        result.push(key);
+    } else {
+        for (; index < len; index++) {
+            result.push(set[index]);
+        }
     }
     return result;
 }
