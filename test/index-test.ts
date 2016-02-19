@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {difference, has, intersection, isDisjoint, isSubset, isSuperset, union} from "../lib/index";
+import {difference, has, intersection, isDisjoint, isSubset, isSuperset, symmetricDifference, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -104,6 +104,23 @@ describe("set", () => {
             expect(isSuperset(empty, set)).to.be.false;
             expect(isSuperset(set, superset)).to.be.false;
             expect(isSuperset(superset, set)).to.be.true;
+        });
+
+    });
+
+    describe("symmetricDifference", () => {
+
+        it("returns the symmetric difference of two sets", () => {
+            expect(symmetricDifference(set, set)).to.eql(empty);
+            expect(symmetricDifference(disjoint1, set)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(symmetricDifference(set, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(symmetricDifference(disjoint2, set)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(symmetricDifference(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(symmetricDifference(empty, empty)).to.eql(empty);
+            expect(symmetricDifference(set, empty)).to.eql(set);
+            expect(symmetricDifference(empty, set)).to.eql(set);
+            expect(symmetricDifference(set, superset)).to.eql(["a", "g"]);
+            expect(symmetricDifference(superset, set)).to.eql(["a", "g"]);
         });
 
     });
