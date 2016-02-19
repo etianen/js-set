@@ -1,44 +1,48 @@
-function copy<V>(result: Array<V>, set: Array<V>, index: number): void {
+export interface Set<V> extends Array<V> {
+    isSet: void;
+}
+
+type EntryCallback<C, V> = (context: C, valueA: V, valueB: V) => void;
+
+type SetCallback<C, V> = (context: C, set: Set<V>, index: number) => void;
+
+function noop() {
+    // Do nothing.
+}
+
+function copy<V>(result: Set<V>, set: Set<V>, index: number): void {
     for (const len = set.length; index < len; index++) {
         result.push(set[index]);
     }
 }
 
-function merge<V>(setA: Array<V>, setB: Array<V>, pushBoth: boolean, pushA: boolean, pushB: boolean): Array<V> {
-    const result: Array<V> = [];
+function iter<C, V>(context: C, setA: Set<V>, setB: Set<V>, callback: EntryCallback<C, V>, setACallback: SetCallback<C, V>, setBCallback: SetCallback<C, V>): void {
     const lenA = setA.length;
     const lenB = setB.length;
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        if (setA[indexA] === setB[indexB]) {
-            if (pushBoth) {
-                result.push(setA[indexA]);
-            }
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
             indexA++;
-            indexB++;
-        } else if (setA[indexA] < setB[indexB]) {
-            if (pushA) {
-                result.push(setA[indexA]);
-            }
-            indexA++;
-        } else {
-            if (pushB) {
-                result.push(setB[indexB]);
-            }
+        }
+        if (valueB <= valueA) {
             indexB++;
         }
+        callback(context, valueA, valueB);
     }
-    if (pushA) {
-        copy(result, setA, indexA);
-    }
-    if (pushB) {
-        copy(result, setB, indexB);
-    }
+    setACallback(context, setA, indexA);
+    setBCallback(context, setB, indexB);
+}
+
+function merge<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<Set<V>, V>, setACallback: SetCallback<Set<V>, V>, setBCallback: SetCallback<Set<V>, V>): Set<V> {
+    const result = [] as Set<V>;
+    iter(result, setA, setB, callback, setACallback, setBCallback);
     return result;
 }
 
-export function compare<V>(setA: Array<V>, setB: Array<V>, failOnBoth: boolean, failOnA: boolean): boolean {
+export function compare<V>(setA: Set<V>, setB: Set<V>, failOnBoth: boolean, failOnA: boolean): boolean {
     const lenA = setA.length;
     const lenB = setB.length;
     let indexA = 0;
@@ -68,9 +72,9 @@ export function compare<V>(setA: Array<V>, setB: Array<V>, failOnBoth: boolean, 
 
 // set API.
 
-export function add<V>(set: Array<V>, key: V): Array<V> {
+export function add<V>(set: Set<V>, key: V): Set<V> {
     let len = set.length;
-    const result: Array<V> = [];
+    const result = [] as Set<V>;
     let index: number = 0;
     for (; index < len; index++) {
         if (set[index] === key) {
@@ -89,18 +93,28 @@ export function add<V>(set: Array<V>, key: V): Array<V> {
     return result;
 }
 
-export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, false, true, false);
+export function create<V>(): Set<V> {
+    return [] as Set<V>;
 }
 
-export function from<V>(keys: Array<V>): Array<V> {
+function differenceCallback<V>(result: Set<V>, valueA: V, valueB: V): void {
+    if (valueA < valueB) {
+        result.push(valueA);
+    }
+}
+
+export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
+    return merge(setA, setB, differenceCallback, copy, noop);
+}
+
+export function from<V>(keys: Array<V>): Set<V> {
     const len = keys.length;
-    if (len === 0) {
-        return keys;
+    if (len <= 1) {
+        return keys as Set<V>;
     }
     const sortedKeys = keys.slice();
     sortedKeys.sort();
-    const result: Array<V> = [sortedKeys[0]];
+    const result = [sortedKeys[0]] as Set<V>;
     for (let index = 1; index < len; index++) {
         if (sortedKeys[index] !== sortedKeys[index - 1]) {
             result.push(sortedKeys[index]);
@@ -109,7 +123,7 @@ export function from<V>(keys: Array<V>): Array<V> {
     return result;
 }
 
-export function has<V>(set: Array<V>, key: V): boolean {
+export function has<V>(set: Set<V>, key: V): boolean {
     const len = set.length;
     if (len === 0) {
         return false;
@@ -130,25 +144,31 @@ export function has<V>(set: Array<V>, key: V): boolean {
     return false;
 }
 
-export function intersection<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, true, false, false);
+function intersectionCallback<V>(result: Set<V>, valueA: V, valueB: V): void {
+    if (valueA === valueB) {
+        result.push(valueA);
+    }
 }
 
-export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
+export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
+    return merge(setA, setB, intersectionCallback, noop, noop);
+}
+
+export function isDisjoint<V>(setA: Set<V>, setB: Set<V>): boolean {
     return compare(setA, setB, true, false);
 }
 
-export function isSubset<V>(setA: Array<V>, setB: Array<V>): boolean {
+export function isSubset<V>(setA: Set<V>, setB: Set<V>): boolean {
     return compare(setA, setB, false, true);
 }
 
-export function isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean {
+export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
     return isSubset(setB, setA);
 }
 
-export function remove<V>(set: Array<V>, key: V): Array<V> {
+export function remove<V>(set: Set<V>, key: V): Set<V> {
     let len = set.length;
-    const result: Array<V> = [];
+    const result = [] as Set<V>;
     let index: number = 0;
     for (; index < len; index++) {
         if (set[index] === key) {
@@ -161,10 +181,26 @@ export function remove<V>(set: Array<V>, key: V): Array<V> {
     return set;
 }
 
-export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, false, true, true);
+function symmetricDifferenceCallback<V>(result: Set<V>, valueA: V, valueB: V): void {
+    if (valueA < valueB) {
+        result.push(valueA);
+    } else if (valueB < valueA) {
+        result.push(valueB);
+    }
 }
 
-export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, true, true, true);
+export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
+    return merge(setA, setB, symmetricDifferenceCallback, copy, copy);
+}
+
+function unionCallback<V>(result: Set<V>, valueA: V, valueB: V): void {
+    if (valueA <= valueB) {
+        result.push(valueA);
+    } else if (valueB < valueA) {
+        result.push(valueB);
+    }
+}
+
+export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
+    return merge(setA, setB, unionCallback, copy, copy);
 }

@@ -9,6 +9,8 @@ Helpers for using unique sorted arrays as sets.
 npm install '@etianen/set'
 ```
 
+**Note:** If using Typescript, be sure to set `moduleResolution` to `"node"` in your `tsconfig.json`.
+
 
 ## Overview
 
@@ -25,6 +27,23 @@ In all the functions below:
 * The source argument is assumed to be unique and sorted.
 
 
+### Set
+
+A unique sorted array of keys, implemented as a plain Javascript `Array`.
+
+``` ts
+interface Set<V> extends Array<V> {
+    isSet: void;
+}
+```
+
+**Note:** `isSet` is a virtual, compiler-only flag. It exists to prevent accidentally passing an unsorted, non-unique array into functions expecting a sorted, unique array.
+
+Create a new `Set` using `create()` or convert an existing `Array` to a `Set` using `from()`.
+
+**Typescript only:** To coerce an `Array` that is guaranteed to be sorted and unique into a `Set`, use an explicit type cast.
+
+
 ### add()
 
 Adds `key` to a new copy of `set`. If `key` is already in `set`, then `set` is returned unchanged.
@@ -32,29 +51,38 @@ Adds `key` to a new copy of `set`. If `key` is already in `set`, then `set` is r
 **Complexity:** O(n)
 
 ``` ts
-add<V>(set: Array<V>, key: V): Array<V>;
+add<V>(set: Set<V>, key: V): Set<V>;
+```
+
+
+### create()
+
+Creates a new blank `Set`.
+
+``` ts
+create<V>(): Set<V>;
 ```
 
 
 ### difference()
 
-Returns a set of all keys in `setA` that are not in `setB`.
+Returns a `Set` of all keys in `setA` that are not in `setB`.
 
 **Complexity:** O(n)
 
 ``` ts
-difference<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+difference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 ```
 
 
 ### from()
 
-Returns a sorted, unique copy of `keys`.
+Converts `keys` into a sorted, unique `Set`.
 
 **Complexity:** O(2n + n log(n))
 
 ``` ts
-from<V>(keys: Array<V>): Array<V>;
+from<V>(keys: Set<V>): Set<V>;
 ```
 
 
@@ -65,18 +93,18 @@ Returns `true` if `key` is present in `set`.
 **Complexity:** O(log(n))
 
 ``` ts
-has<V>(set: Array<V>, key: V): boolean;
+has<V>(set: Set<V>, key: V): boolean;
 ```
 
 
 ### intersection()
 
-Returns a set of all keys present in both `setA` and `setB`.
+Returns a `Set` of all keys present in both `setA` and `setB`.
 
 **Complexity:** O(n)
 
 ``` ts
-intersection<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+intersection<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 ```
 
 
@@ -87,7 +115,7 @@ Returns `true` if `setA` and `setB` have no keys in common.
 **Complexity:** O(n)
 
 ``` ts
-isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean;
+isDisjoint<V>(setA: Set<V>, setB: Set<V>): boolean;
 ```
 
 
@@ -98,7 +126,7 @@ Returns `true` if all keys in `setA` are present in `setB`.
 **Complexity:** O(n)
 
 ``` ts
-isSubset<V>(setA: Array<V>, setB: Array<V>): boolean;
+isSubset<V>(setA: Set<V>, setB: Set<V>): boolean;
 ```
 
 
@@ -109,7 +137,7 @@ Returns `true` if all keys in `setB` are present in `setA`.
 **Complexity:** O(n)
 
 ``` ts
-isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean;
+isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean;
 ```
 
 
@@ -120,27 +148,27 @@ Returns a copy of `set` with `key` removed. If `key` is not present in `set`, th
 **Complexity:** O(n)
 
 ``` ts
-remove<V>(set: Array<V>, key: V): Array<V>;
+remove<V>(set: Set<V>, key: V): Set<V>;
 ```
 
 
 ### symmetricDifference()
 
-Returns a set of all keys not present in both `setA` and `setB`.
+Returns a `Set` of all keys not present in both `setA` and `setB`.
 
 **Complexity:** O(n)
 
 ``` ts
-symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 ```
 
 
 ### union()
 
-Returns a set of all keys in both `setA` and `setB`.
+Returns a `Set` of all keys in both `setA` and `setB`.
 
 ``` ts
-union<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+union<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 ```
 
 

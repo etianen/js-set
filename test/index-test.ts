@@ -1,14 +1,14 @@
 import {expect} from "chai";
-import {add, difference, from, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
+import {Set, add, create, difference, from, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
 
 
 describe("set", () => {
 
-    const disjoint1 = ["a"];
-    const disjoint2 = ["g"];
-    const empty: Array<string> = [];
-    const set = ["b", "c", "d", "e", "f"];
-    const superset = ["a", "b", "c", "d", "e", "f", "g"];
+    const disjoint1 = ["a"] as Set<string>;
+    const disjoint2 = ["g"]  as Set<string>;
+    const empty = [] as Set<string>;
+    const set = ["b", "c", "d", "e", "f"] as Set<string>;
+    const superset = ["a", "b", "c", "d", "e", "f", "g"] as Set<string>;
 
     describe("add", () => {
 
@@ -18,6 +18,14 @@ describe("set", () => {
             expect(add(set, "f")).to.equal(set);
             expect(add(set, "g")).to.eql(["b", "c", "d", "e", "f", "g"]);
             expect(add(empty, "a")).to.eql(["a"]);
+        });
+
+    });
+
+    describe("create", () => {
+
+        it("creates a new set", () => {
+            expect(create()).to.eql(empty);
         });
 
     });
