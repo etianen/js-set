@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {add, difference, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
+import {add, difference, from, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -35,6 +35,15 @@ describe("set", () => {
             expect(difference(empty, set)).to.eql(empty);
             expect(difference(set, superset)).to.eql(empty);
             expect(difference(superset, set)).to.eql(["a", "g"]);
+        });
+
+    });
+
+    describe("from", () => {
+
+        it("creates a set from an array", () => {
+            expect(from(empty)).to.equal(empty);
+            expect(from(["b", "a", "a", "c", "b"])).to.eql(["a", "b", "c"]);
         });
 
     });

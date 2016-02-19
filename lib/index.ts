@@ -47,6 +47,22 @@ export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     return result;
 }
 
+export function from<V>(keys: Array<V>): Array<V> {
+    const len = keys.length;
+    if (len === 0) {
+        return keys;
+    }
+    const sortedKeys = keys.slice();
+    sortedKeys.sort();
+    const result: Array<V> = [sortedKeys[0]];
+    for (let index = 1; index < len; index++) {
+        if (sortedKeys[index] !== sortedKeys[index - 1]) {
+            result.push(sortedKeys[index]);
+        }
+    }
+    return result;
+}
+
 export function has<V>(set: Array<V>, key: V): boolean {
     const len = set.length;
     if (len === 0) {
