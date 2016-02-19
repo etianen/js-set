@@ -3,14 +3,13 @@ export function add<V>(set: Array<V>, key: V): Array<V> {
     const result: Array<V> = [];
     let index: number = 0;
     for (; index < len; index++) {
-        const value = set[index];
-        if (value === key) {
+        if (set[index] === key) {
             return set;
-        } else if (value > key) {
+        } else if (set[index] > key) {
             result.push(key);
             break;
         }
-        result.push(value);
+        result.push(set[index]);
     }
     if (index === len) {
         result.push(key);
@@ -29,13 +28,11 @@ export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
+        if (setA[indexA] === setB[indexB]) {
             indexA++;
             indexB++;
-        } else if (valueA < valueB) {
-            result.push(valueA);
+        } else if (setA[indexA] < setB[indexB]) {
+            result.push(setA[indexA]);
             indexA++;
         } else {
             indexB++;
@@ -72,10 +69,9 @@ export function has<V>(set: Array<V>, key: V): boolean {
     let newIndex = Math.floor(len / 2);
     while (index !== newIndex) {
         index = newIndex;
-        const value = set[index];
-        if (value === key) {
+        if (set[index] === key) {
             return true;
-        } else if (value > key) {
+        } else if (set[index] > key) {
             newIndex = index / 2;
         } else {
             newIndex = (index + len) / 2;
@@ -92,13 +88,11 @@ export function intersection<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
-            result.push(valueA);
+        if (setA[indexA] === setB[indexB]) {
+            result.push(setA[indexA]);
             indexA++;
             indexB++;
-        } else if (valueA < valueB) {
+        } else if (setA[indexA] < setB[indexB]) {
             indexA++;
         } else {
             indexB++;
@@ -113,11 +107,9 @@ export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
+        if (setA[indexA] === setB[indexB]) {
             return false;
-        } else if (valueA < valueB) {
+        } else if (setA[indexA] < setB[indexB]) {
             indexA++;
         } else {
             indexB++;
@@ -132,12 +124,10 @@ export function isSubset<V>(setA: Array<V>, setB: Array<V>): boolean {
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
+        if (setA[indexA] === setB[indexB]) {
             indexA++;
             indexB++;
-        } else if (valueA < valueB) {
+        } else if (setA[indexA] < setB[indexB]) {
             return false;
         } else {
             indexB++;
@@ -155,14 +145,13 @@ export function remove<V>(set: Array<V>, key: V): Array<V> {
     const result: Array<V> = [];
     let index: number = 0;
     for (; index < len; index++) {
-        const value = set[index];
-        if (value === key) {
+        if (set[index] === key) {
             for (index++; index < len; index++) {
                 result.push(set[index]);
             }
             return result;
         }
-        result.push(value);
+        result.push(set[index]);
     }
     // Return the original set for value equality.
     return set;
@@ -175,16 +164,14 @@ export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V>
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
+        if (setA[indexA] === setB[indexB]) {
             indexA++;
             indexB++;
-        } else if (valueA < valueB) {
-            result.push(valueA);
+        } else if (setA[indexA] < setB[indexB]) {
+            result.push(setA[indexA]);
             indexA++;
         } else {
-            result.push(valueB);
+            result.push(setB[indexB]);
             indexB++;
         }
     }
@@ -204,17 +191,15 @@ export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA === valueB) {
-            result.push(valueA);
+        if (setA[indexA] === setB[indexB]) {
+            result.push(setA[indexA]);
             indexA++;
             indexB++;
-        } else if (valueA < valueB) {
-            result.push(valueA);
+        } else if (setA[indexA] < setB[indexB]) {
+            result.push(setA[indexA]);
             indexA++;
         } else {
-            result.push(valueB);
+            result.push(setB[indexB]);
             indexB++;
         }
     }
