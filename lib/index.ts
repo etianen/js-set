@@ -1,12 +1,10 @@
-type Pusher<V> = (result: Array<V>, value: V) => void;
-
-function copy<V>(result: Array<V>, set: Array<V>, index: number, push: Pusher<V>): void {
+function copy<V>(result: Array<V>, set: Array<V>, index: number): void {
     for (const len = set.length; index < len; index++) {
-        push(result, set[index]);
+        result.push(set[index]);
     }
 }
 
-function merge<V>(setA: Array<V>, setB: Array<V>, pushBoth: Pusher<V>, pushA: Pusher<V>, pushB: Pusher<V>): Array<V> {
+function merge<V>(setA: Array<V>, setB: Array<V>, pushBoth: boolean, pushA: boolean, pushB: boolean): Array<V> {
     const result: Array<V> = [];
     const lenA = setA.length;
     const lenB = setB.length;
@@ -14,27 +12,31 @@ function merge<V>(setA: Array<V>, setB: Array<V>, pushBoth: Pusher<V>, pushA: Pu
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
         if (setA[indexA] === setB[indexB]) {
-            pushBoth(result, setA[indexA]);
+            if (pushBoth) {
+                result.push(setA[indexA]);
+            }
             indexA++;
             indexB++;
         } else if (setA[indexA] < setB[indexB]) {
-            pushA(result, setA[indexA]);
+            if (pushA) {
+                result.push(setA[indexA]);
+            }
             indexA++;
         } else {
-            pushB(result, setB[indexB]);
+            if (pushB) {
+                result.push(setB[indexB]);
+            }
             indexB++;
         }
     }
-    copy(result, setA, indexA, pushA);
-    copy(result, setB, indexB, pushB);
+    if (pushA) {
+        copy(result, setA, indexA);
+    }
+    if (pushB) {
+        copy(result, setB, indexB);
+    }
     return result;
 }
-
-function noPush() {
-    // Do nothing;
-}
-
-const push: Pusher<Object> = Function.prototype.call.bind(Array.prototype.push);
 
 
 // set API.
@@ -55,13 +57,13 @@ export function add<V>(set: Array<V>, key: V): Array<V> {
     if (index === len) {
         result.push(key);
     } else {
-        copy(result, set, index, push);
+        copy(result, set, index);
     }
     return result;
 }
 
 export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, noPush, push, noPush);
+    return merge<V>(setA, setB, false, true, false);
 }
 
 export function from<V>(keys: Array<V>): Array<V> {
@@ -102,7 +104,7 @@ export function has<V>(set: Array<V>, key: V): boolean {
 }
 
 export function intersection<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, push, noPush, noPush);
+    return merge<V>(setA, setB, true, false, false);
 }
 
 export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
@@ -150,7 +152,7 @@ export function remove<V>(set: Array<V>, key: V): Array<V> {
     let index: number = 0;
     for (; index < len; index++) {
         if (set[index] === key) {
-            copy(result, set, index + 1, push);
+            copy(result, set, index + 1);
             return result;
         }
         result.push(set[index]);
@@ -160,9 +162,9 @@ export function remove<V>(set: Array<V>, key: V): Array<V> {
 }
 
 export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, noPush, push, push);
+    return merge<V>(setA, setB, false, true, true);
 }
 
 export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
-    return merge<V>(setA, setB, push, push, push);
+    return merge<V>(setA, setB, true, true, true);
 }
