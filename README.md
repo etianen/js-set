@@ -1,6 +1,6 @@
 # @etianen/set
 
-Helpers for arrays.
+Helpers for using unique sorted arrays as sets.
 
 
 ## Installing
@@ -12,19 +12,136 @@ npm install '@etianen/set'
 
 ## Overview
 
-Javascript arrays lack a few useful features.
+Unique sorted arrays can be used as relatively performant sets, without requiring a dedicated data structure.
 
-@etianen/set provides an additional set of helpers of interacting with arrays.
+@etianen/set provides a set of helpers for using unique sorted arrays as sets.
 
 
-## array API
+## set API
 
 In all the functions below:
 
 * The source arguments are never mutated.
+* The source argument is assumed to be unique and sorted.
 
 
+### add()
 
+Adds `key` to a new copy of `set`. If `key` is already in `set`, then `set` is returned unchanged.
+
+**Complexity:** O(n)
+
+``` ts
+add<V>(set: Array<V>, key: V): Array<V>;
+```
+
+
+### difference()
+
+Returns a set of all keys in `setA` that are not in `setB`.
+
+**Complexity:** O(n)
+
+``` ts
+difference<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+```
+
+
+### from()
+
+Returns a sorted, unique copy of `keys`.
+
+**Complexity:** O(2n + n log(n))
+
+``` ts
+from<V>(keys: Array<V>): Array<V>;
+```
+
+
+### has()
+
+Returns `true` if `key` is present in `set`.
+
+**Complexity:** O(log(n))
+
+``` ts
+has<V>(set: Array<V>, key: V): boolean;
+```
+
+
+### intersection()
+
+Returns a set of all keys present in both `setA` and `setB`.
+
+**Complexity:** O(n)
+
+``` ts
+intersection<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+```
+
+
+### isDisjoint()
+
+Returns `true` if `setA` and `setB` have no keys in common.
+
+**Complexity:** O(n)
+
+``` ts
+isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean;
+```
+
+
+### isSubset()
+
+Returns `true` if all keys in `setA` are present in `setB`.
+
+**Complexity:** O(n)
+
+``` ts
+isSubset<V>(setA: Array<V>, setB: Array<V>): boolean;
+```
+
+
+### isSuperset()
+
+Returns `true` if all keys in `setB` are present in `setA`.
+
+**Complexity:** O(n)
+
+``` ts
+isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean;
+```
+
+
+### remove()
+
+Returns a copy of `set` with `key` removed. If `key` is not present in `set`, then `set` is returned unchanged.
+
+**Complexity:** O(n)
+
+``` ts
+remove<V>(set: Array<V>, key: V): Array<V>;
+```
+
+
+### symmetricDifference()
+
+Returns a set of all keys not present in both `setA` and `setB`.
+
+**Complexity:** O(n)
+
+``` ts
+symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+```
+
+
+### union()
+
+Returns a set of all keys in both `setA` and `setB`.
+
+``` ts
+union<V>(setA: Array<V>, setB: Array<V>): Array<V>;
+```
 
 
 ## Build status

@@ -1,7 +1,7 @@
 {
   "name": "@etianen/set",
   "version": "0.2.0",
-  "description": "Helpers for arrays.",
+  "description": "Helpers for using unique sorted arrays as sets.",
   "main": "./lib/index.js",
   "scripts": {
     "typings": "typings install",
