@@ -1,3 +1,12 @@
+function copy<V>(result: Array<V>, set: Array<V>, index: number): void {
+    for (const len = set.length; index < len; index++) {
+        result.push(set[index]);
+    }
+}
+
+
+// set API.
+
 export function add<V>(set: Array<V>, key: V): Array<V> {
     let len = set.length;
     const result: Array<V> = [];
@@ -14,9 +23,7 @@ export function add<V>(set: Array<V>, key: V): Array<V> {
     if (index === len) {
         result.push(key);
     } else {
-        for (; index < len; index++) {
-            result.push(set[index]);
-        }
+        copy(result, set, index);
     }
     return result;
 }
@@ -38,9 +45,7 @@ export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
+    copy(result, setA, indexA);
     return result;
 }
 
@@ -175,12 +180,8 @@ export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V>
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
-    for (; indexB < lenB; indexB++) {
-        result.push(setB[indexB]);
-    }
+    copy(result, setA, indexA);
+    copy(result, setB, indexB);
     return result;
 }
 
@@ -203,11 +204,7 @@ export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
-    for (; indexB < lenB; indexB++) {
-        result.push(setB[indexB]);
-    }
+    copy(result, setA, indexA);
+    copy(result, setB, indexB);
     return result;
 }
