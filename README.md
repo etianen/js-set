@@ -1,4 +1,4 @@
-# @etianen/array
+# @etianen/set
 
 Helpers for arrays.
 
@@ -6,7 +6,7 @@ Helpers for arrays.
 ## Installing
 
 ``` bash
-npm install '@etianen/array'
+npm install '@etianen/set'
 ```
 
 
@@ -14,7 +14,7 @@ npm install '@etianen/array'
 
 Javascript arrays lack a few useful features.
 
-@etianen/array provides an additional set of helpers of interacting with arrays.
+@etianen/set provides an additional set of helpers of interacting with arrays.
 
 
 ## array API
@@ -31,18 +31,18 @@ In all the functions below:
 
 This project is built on every push using the Travis-CI service.
 
-[![Build Status](https://travis-ci.org/etianen/js-array.svg?branch=master)](https://travis-ci.org/etianen/js-array)
+[![Build Status](https://travis-ci.org/etianen/js-set.svg?branch=master)](https://travis-ci.org/etianen/js-set)
 
 
 ## Support and announcements
 
-Downloads and bug tracking can be found at the [main project website](http://github.com/etianen/js-array).
+Downloads and bug tracking can be found at the [main project website](http://github.com/etianen/js-set).
 
 
 ## More information
 
 This project was developed by Dave Hall. You can get the code
-from the [project site](http://github.com/etianen/js-array).
+from the [project site](http://github.com/etianen/js-set).
 
 Dave Hall is a freelance web developer, based in Cambridge, UK. You can usually
 find him on the Internet:

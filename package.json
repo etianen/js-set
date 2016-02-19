@@ -1,5 +1,5 @@
 {
-  "name": "@etianen/array",
+  "name": "@etianen/set",
   "version": "0.2.0",
   "description": "Helpers for arrays.",
   "main": "./lib/index.js",
@@ -33,10 +33,10 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/etianen/js-array.git"
+    "url": "git+https://github.com/etianen/js-set.git"
   },
   "bugs": {
-    "url": "https://github.com/etianen/js-array/issues"
+    "url": "https://github.com/etianen/js-set/issues"
   },
-  "homepage": "https://github.com/etianen/js-array#readme"
+  "homepage": "https://github.com/etianen/js-set#readme"
 }

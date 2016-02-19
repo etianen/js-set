@@ -13,7 +13,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    repo: etianen/js-array
+    repo: etianen/js-set
 notifications:
   on_success: never
   on_failure: change

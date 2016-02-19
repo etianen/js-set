@@ -1,5 +1,5 @@
 {
-  "name": "@etianen/array",
+  "name": "@etianen/set",
   "main": "lib/index.d.ts",
   "dependencies": {},
   "devDependencies": {},
