@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {has, intersection, isDisjoint, union} from "../lib/index";
+import {has, intersection, isDisjoint, isSubset, isSuperset, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -53,6 +53,40 @@ describe("set", () => {
             expect(isDisjoint(empty, set)).to.be.true;
             expect(isDisjoint(set, superset)).to.be.false;
             expect(isDisjoint(superset, set)).to.be.false;
+        });
+
+    });
+
+    describe("isSubset", () => {
+
+        it("returns true if the first set is a subset of the second", () => {
+            expect(isSubset(set, set)).to.be.true;
+            expect(isSubset(disjoint1, set)).to.be.false;
+            expect(isSubset(set, disjoint1)).to.be.false;
+            expect(isSubset(disjoint2, set)).to.be.false;
+            expect(isSubset(set, disjoint2)).to.be.false;
+            expect(isSubset(empty, empty)).to.be.true;
+            expect(isSubset(set, empty)).to.be.false;
+            expect(isSubset(empty, set)).to.be.true;
+            expect(isSubset(set, superset)).to.be.true;
+            expect(isSubset(superset, set)).to.be.false;
+        });
+
+    });
+
+    describe("isSuperset", () => {
+
+        it("returns true if the first set is a superset of the second", () => {
+            expect(isSuperset(set, set)).to.be.true;
+            expect(isSuperset(disjoint1, set)).to.be.false;
+            expect(isSuperset(set, disjoint1)).to.be.false;
+            expect(isSuperset(disjoint2, set)).to.be.false;
+            expect(isSuperset(set, disjoint2)).to.be.false;
+            expect(isSuperset(empty, empty)).to.be.true;
+            expect(isSuperset(set, empty)).to.be.true;
+            expect(isSuperset(empty, set)).to.be.false;
+            expect(isSuperset(set, superset)).to.be.false;
+            expect(isSuperset(superset, set)).to.be.true;
         });
 
     });

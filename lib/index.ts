@@ -61,6 +61,30 @@ export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
     return true;
 }
 
+export function isSubset<V>(setA: Array<V>, setB: Array<V>): boolean {
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA === valueB) {
+            indexA++;
+            indexB++;
+        } else if (valueA < valueB) {
+            return false;
+        } else {
+            indexB++;
+        }
+    }
+    return indexA === lenA;
+}
+
+export function isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean {
+    return isSubset(setB, setA);
+}
+
 export function union<V>(setA: Array<V>, setB: Array<V>) {
     const result: Array<V> = [];
     const lenA = setA.length;
