@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {difference, has, intersection, isDisjoint, isSubset, isSuperset, symmetricDifference, union} from "../lib/index";
+import {add, difference, has, intersection, isDisjoint, isSubset, isSuperset, symmetricDifference, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -9,6 +9,17 @@ describe("set", () => {
     const empty: Array<string> = [];
     const set = ["b", "c", "d", "e", "f"];
     const superset = ["a", "b", "c", "d", "e", "f", "g"];
+
+    describe("add", () => {
+
+        it("adds a value to the set", () => {
+            expect(add(set, "a")).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(add(set, "b")).to.eql(set);
+            expect(add(set, "g")).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(add(empty, "a")).to.eql(["a"]);
+        });
+
+    });
 
     describe("difference", () => {
 

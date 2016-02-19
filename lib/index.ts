@@ -1,3 +1,36 @@
+export function add<V>(set: Array<V>, key: V): Array<V> {
+    let len = set.length;
+    // Perform simple merges.
+    if (len === 0) {
+        return [key];
+    }
+    if (key < set[0]) {
+        const result = [key];
+        result.push.apply(result, set);
+        return result;
+    }
+    if (key > set[0]) {
+        return set.concat(key);
+    }
+    // Perform a more expensive merge.
+    const result: Array<V> = [];
+    let index: number = 0;
+    for (; index < len; index++) {
+        const value = set[index];
+        if (value === key) {
+            return set;
+        } else if (value > key) {
+            result.push(key);
+            break;
+        }
+        result.push(value);
+    }
+    for (; index < len; index++) {
+        result.push(set[index]);
+    }
+    return result;
+}
+
 export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     const result: Array<V> = [];
     const lenA = setA.length;
@@ -17,7 +50,7 @@ export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
             indexB++;
         }
     }
-    for (indexA; indexA < lenA; indexA++) {
+    for (; indexA < lenA; indexA++) {
         result.push(setA[indexA]);
     }
     return result;
@@ -130,10 +163,10 @@ export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V>
             indexB++;
         }
     }
-    for (indexA; indexA < lenA; indexA++) {
+    for (; indexA < lenA; indexA++) {
         result.push(setA[indexA]);
     }
-    for (indexB; indexB < lenB; indexB++) {
+    for (; indexB < lenB; indexB++) {
         result.push(setB[indexB]);
     }
     return result;
@@ -160,10 +193,10 @@ export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
             indexB++;
         }
     }
-    for (indexA; indexA < lenA; indexA++) {
+    for (; indexA < lenA; indexA++) {
         result.push(setA[indexA]);
     }
-    for (indexB; indexB < lenB; indexB++) {
+    for (; indexB < lenB; indexB++) {
         result.push(setB[indexB]);
     }
     return result;
