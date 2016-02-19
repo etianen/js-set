@@ -38,6 +38,33 @@ function merge<V>(setA: Array<V>, setB: Array<V>, pushBoth: boolean, pushA: bool
     return result;
 }
 
+export function compare<V>(setA: Array<V>, setB: Array<V>, failOnBoth: boolean, failOnA: boolean): boolean {
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        if (setA[indexA] === setB[indexB]) {
+            if (failOnBoth) {
+                return false;
+            }
+            indexA++;
+            indexB++;
+        } else if (setA[indexA] < setB[indexB]) {
+            if (failOnA) {
+                return false;
+            }
+            indexA++;
+        } else {
+            indexB++;
+        }
+    }
+    if (failOnA) {
+        return indexA === lenA;
+    }
+    return true;
+}
+
 
 // set API.
 
@@ -108,38 +135,11 @@ export function intersection<V>(setA: Array<V>, setB: Array<V>): Array<V> {
 }
 
 export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
-    const lenA = setA.length;
-    const lenB = setB.length;
-    let indexA = 0;
-    let indexB = 0;
-    while (indexA < lenA && indexB < lenB) {
-        if (setA[indexA] === setB[indexB]) {
-            return false;
-        } else if (setA[indexA] < setB[indexB]) {
-            indexA++;
-        } else {
-            indexB++;
-        }
-    }
-    return true;
+    return compare(setA, setB, true, false);
 }
 
 export function isSubset<V>(setA: Array<V>, setB: Array<V>): boolean {
-    const lenA = setA.length;
-    const lenB = setB.length;
-    let indexA = 0;
-    let indexB = 0;
-    while (indexA < lenA && indexB < lenB) {
-        if (setA[indexA] === setB[indexB]) {
-            indexA++;
-            indexB++;
-        } else if (setA[indexA] < setB[indexB]) {
-            return false;
-        } else {
-            indexB++;
-        }
-    }
-    return indexA === lenA;
+    return compare(setA, setB, false, true);
 }
 
 export function isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean {
