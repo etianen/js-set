@@ -42,6 +42,25 @@ export function intersection<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     return result;
 }
 
+export function isDisjoint<V>(setA: Array<V>, setB: Array<V>): boolean {
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA === valueB) {
+            return false;
+        } else if (valueA < valueB) {
+            indexA++;
+        } else {
+            indexB++;
+        }
+    }
+    return true;
+}
+
 export function union<V>(setA: Array<V>, setB: Array<V>) {
     const result: Array<V> = [];
     const lenA = setA.length;
