@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {has, intersection, isDisjoint, isSubset, isSuperset, union} from "../lib/index";
+import {difference, has, intersection, isDisjoint, isSubset, isSuperset, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -9,6 +9,23 @@ describe("set", () => {
     const empty: Array<string> = [];
     const set = ["b", "c", "d", "e", "f"];
     const superset = ["a", "b", "c", "d", "e", "f", "g"];
+
+    describe("difference", () => {
+
+        it("returns all keys in the first set that are not in the second set", () => {
+            expect(difference(set, set)).to.eql(empty);
+            expect(difference(disjoint1, set)).to.eql(disjoint1);
+            expect(difference(set, disjoint1)).to.eql(set);
+            expect(difference(disjoint2, set)).to.eql(disjoint2);
+            expect(difference(set, disjoint2)).to.eql(set);
+            expect(difference(empty, empty)).to.eql(empty);
+            expect(difference(set, empty)).to.eql(set);
+            expect(difference(empty, set)).to.eql(empty);
+            expect(difference(set, superset)).to.eql(empty);
+            expect(difference(superset, set)).to.eql(["a", "g"]);
+        });
+
+    });
 
     describe("has", () => {
 

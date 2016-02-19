@@ -1,3 +1,29 @@
+export function difference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
+    const result: Array<V> = [];
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA === valueB) {
+            indexA++;
+            indexB++;
+        } else if (valueA < valueB) {
+            result.push(valueA);
+            indexA++;
+        } else {
+            indexB++;
+        }
+    }
+    for (indexA; indexA < lenA; indexA++) {
+        result.push(setA[indexA]);
+    }
+    return result;
+}
+
+
 export function has<V>(set: Array<V>, key: V): boolean {
     const len = set.length;
     if (len === 0) {
@@ -85,7 +111,7 @@ export function isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean {
     return isSubset(setB, setA);
 }
 
-export function union<V>(setA: Array<V>, setB: Array<V>) {
+export function union<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     const result: Array<V> = [];
     const lenA = setA.length;
     const lenB = setB.length;
