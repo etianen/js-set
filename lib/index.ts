@@ -134,6 +134,24 @@ export function isSuperset<V>(setA: Array<V>, setB: Array<V>): boolean {
     return isSubset(setB, setA);
 }
 
+export function remove<V>(set: Array<V>, key: V): Array<V> {
+    let len = set.length;
+    const result: Array<V> = [];
+    let index: number = 0;
+    for (; index < len; index++) {
+        const value = set[index];
+        if (value === key) {
+            for (index++; index < len; index++) {
+                result.push(set[index]);
+            }
+            return result;
+        }
+        result.push(value);
+    }
+    // Return the original set for value equality.
+    return set;
+}
+
 export function symmetricDifference<V>(setA: Array<V>, setB: Array<V>): Array<V> {
     const result: Array<V> = [];
     const lenA = setA.length;

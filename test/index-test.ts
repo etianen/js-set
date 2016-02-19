@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {add, difference, has, intersection, isDisjoint, isSubset, isSuperset, symmetricDifference, union} from "../lib/index";
+import {add, difference, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
 
 
 describe("set", () => {
@@ -14,7 +14,8 @@ describe("set", () => {
 
         it("adds a value to the set", () => {
             expect(add(set, "a")).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(add(set, "b")).to.eql(set);
+            expect(add(set, "b")).to.equal(set);
+            expect(add(set, "f")).to.equal(set);
             expect(add(set, "g")).to.eql(["b", "c", "d", "e", "f", "g"]);
             expect(add(empty, "a")).to.eql(["a"]);
         });
@@ -115,6 +116,18 @@ describe("set", () => {
             expect(isSuperset(empty, set)).to.be.false;
             expect(isSuperset(set, superset)).to.be.false;
             expect(isSuperset(superset, set)).to.be.true;
+        });
+
+    });
+
+    describe("remove", () => {
+
+        it("removes a value from the set", () => {
+            expect(remove(set, "a")).to.equal(set);
+            expect(remove(set, "b")).to.eql(["c", "d", "e", "f"]);
+            expect(remove(set, "f")).to.eql(["b", "c", "d", "e"]);
+            expect(remove(set, "g")).to.equal(set);
+            expect(remove(empty, "a")).to.equal(empty);
         });
 
     });
