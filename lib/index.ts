@@ -91,12 +91,12 @@ export function from<V>(keys: Array<V>): Set<V> {
     if (len <= 1) {
         return keys as Set<V>;
     }
-    const sortedKeys = keys.slice();
-    sortedKeys.sort();
+    const sortedKeys = keys.slice().sort();
     const result = [sortedKeys[0]] as Set<V>;
     for (let index = 1; index < len; index++) {
-        if (sortedKeys[index] !== sortedKeys[index - 1]) {
-            result.push(sortedKeys[index]);
+        const value = sortedKeys[index];
+        if (value !== sortedKeys[index - 1]) {
+            result.push(value);
         }
     }
     return result;
@@ -111,9 +111,10 @@ export function has<V>(set: Set<V>, key: V): boolean {
     let newIndex = Math.floor(len / 2);
     while (index !== newIndex) {
         index = newIndex;
-        if (set[index] === key) {
+        const value = set[index];
+        if (value === key) {
             return true;
-        } else if (set[index] > key) {
+        } else if (value > key) {
             newIndex = index / 2;
         } else {
             newIndex = (index + len) / 2;
@@ -158,11 +159,12 @@ export function remove<V>(set: Set<V>, key: V): Set<V> {
     const result = [] as Set<V>;
     let index: number = 0;
     for (; index < len; index++) {
-        if (set[index] === key) {
+        const value = set[index];
+        if (value === key) {
             copy(set, index + 1, result);
             return result;
         }
-        result.push(set[index]);
+        result.push(value);
     }
     // Return the original set for value equality.
     return set;
