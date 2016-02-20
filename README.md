@@ -9,44 +9,47 @@ Helpers for using unique sorted arrays as sets.
 npm install '@etianen/set'
 ```
 
-**Note:** If using Typescript, be sure to set `moduleResolution` to `"node"` in your `tsconfig.json`.
+**Typescript:** To take advantage of typings, be sure to set `moduleResolution` to `"node"` in your `tsconfig.json`.
 
 
 ## Overview
 
 Unique sorted arrays can be used as relatively performant sets, without requiring a dedicated data structure.
 
-@etianen/set provides a set of helpers for using unique sorted arrays as sets.
+@etianen/set provides helpers for using unique sorted arrays as sets.
+
+``` ts
+import * as set from "@etianen/set";
+
+const setA = set.from([1, 2, 3]);
+const setB = set.from([2, 3, 4]);
+set.union(setA, setB);  // => [1, 2, 3, 4];
+set.intersection(setA, setB);  // => [2, 3];
+```
 
 
-## set API
+## API
 
 In all the functions below:
 
 * The source arguments are never mutated.
-* The source argument is assumed to be unique and sorted.
+* The input arrays are assumed to be unique and sorted.
+* If possible, the function will return an input array if the operation is a no-op. This is to help preserve reference equality.
 
+To prevent runtime errors, stick to the following rules:
 
-### Set
+1. Create new sets using `create()`.
+2. Convert existing arrays to sets using `from()`.
+3. Never mutate a set directly. Use `add()`, `remove()` and friends to create new copies of a set with the changes applied.
 
-A unique sorted array of keys, implemented as a plain Javascript `Array`.
+**Advanced:** You can avoid the overhead of using `create()` and `from()` if you can guarantee your array is already unique and sorted, but be very careful!
 
-``` ts
-interface Set<V> extends Array<V> {
-    isSet: void;
-}
-```
-
-**Note:** `isSet` is a virtual, compiler-only flag. It exists to prevent accidentally passing an unsorted, non-unique array into functions expecting a sorted, unique array.
-
-Create a new `Set` using `create()` or convert an existing `Array` to a `Set` using `from()`.
-
-**Typescript only:** To coerce an `Array` that is guaranteed to be sorted and unique into a `Set`, use an explicit type cast.
+**Typescript:** The compiler will prevent you from using input arrays that haven't been created using `create()` or `from()`. Use explicit typecasts to override this, but be very careful!
 
 
 ### add()
 
-Adds `key` to a new copy of `set`. If `key` is already in `set`, then `set` is returned unchanged.
+Adds `key` to a new copy of `set`.
 
 **Complexity:** O(n)
 
@@ -57,7 +60,7 @@ add<V>(set: Set<V>, key: V): Set<V>;
 
 ### create()
 
-Creates a new blank `Set`.
+Creates a new blank set.
 
 ``` ts
 create<V>(): Set<V>;
@@ -66,7 +69,7 @@ create<V>(): Set<V>;
 
 ### difference()
 
-Returns a `Set` of all keys in `setA` that are not in `setB`.
+Returns a set of all keys in `setA` that are not in `setB`.
 
 **Complexity:** O(n)
 
@@ -77,7 +80,7 @@ difference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 
 ### from()
 
-Converts `keys` into a sorted, unique `Set`.
+Converts `keys` into a sorted, unique set.
 
 **Complexity:** O(2n + n log(n))
 
@@ -99,7 +102,7 @@ has<V>(set: Set<V>, key: V): boolean;
 
 ### intersection()
 
-Returns a `Set` of all keys present in both `setA` and `setB`.
+Returns a set of all keys present in both `setA` and `setB`.
 
 **Complexity:** O(n)
 
@@ -143,7 +146,7 @@ isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean;
 
 ### remove()
 
-Returns a copy of `set` with `key` removed. If `key` is not present in `set`, then `set` is returned unchanged.
+Returns a copy of `set` with `key` removed.
 
 **Complexity:** O(n)
 
@@ -154,7 +157,7 @@ remove<V>(set: Set<V>, key: V): Set<V>;
 
 ### symmetricDifference()
 
-Returns a `Set` of all keys not present in both `setA` and `setB`.
+Returns a set of all keys not present in both `setA` and `setB`.
 
 **Complexity:** O(n)
 
@@ -165,7 +168,7 @@ symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 
 ### union()
 
-Returns a `Set` of all keys in both `setA` and `setB`.
+Returns a set of all keys in both `setA` and `setB`.
 
 ``` ts
 union<V>(setA: Set<V>, setB: Set<V>): Set<V>;
