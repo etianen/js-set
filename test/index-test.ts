@@ -34,13 +34,13 @@ describe("set", () => {
 
         it("returns all keys in the first set that are not in the second set", () => {
             expect(difference(set, set)).to.eql(empty);
-            expect(difference(disjoint1, set)).to.eql(disjoint1);
-            expect(difference(set, disjoint1)).to.eql(set);
-            expect(difference(disjoint2, set)).to.eql(disjoint2);
-            expect(difference(set, disjoint2)).to.eql(set);
-            expect(difference(empty, empty)).to.eql(empty);
-            expect(difference(set, empty)).to.eql(set);
-            expect(difference(empty, set)).to.eql(empty);
+            expect(difference(disjoint1, set)).to.equal(disjoint1);
+            expect(difference(set, disjoint1)).to.equal(set);
+            expect(difference(disjoint2, set)).to.equal(disjoint2);
+            expect(difference(set, disjoint2)).to.equal(set);
+            expect(difference(empty, empty)).to.equal(empty);
+            expect(difference(set, empty)).to.equal(set);
+            expect(difference(empty, set)).to.equal(empty);
             expect(difference(set, superset)).to.eql(empty);
             expect(difference(superset, set)).to.eql(["a", "g"]);
         });
@@ -72,15 +72,15 @@ describe("set", () => {
     describe("intersection", () => {
 
         it("returns the intersection of two sets", () => {
-            expect(intersection(set, set)).to.eql(set);
+            expect(intersection(set, set)).to.equal(set);
             expect(intersection(disjoint1, set)).to.eql(empty);
             expect(intersection(set, disjoint1)).to.eql(empty);
             expect(intersection(disjoint2, set)).to.eql(empty);
             expect(intersection(set, disjoint2)).to.eql(empty);
-            expect(intersection(empty, empty)).to.eql(empty);
+            expect(intersection(empty, empty)).to.equal(empty);
             expect(intersection(set, empty)).to.eql(empty);
-            expect(intersection(empty, set)).to.eql(empty);
-            expect(intersection(set, superset)).to.eql(set);
+            expect(intersection(empty, set)).to.equal(empty);
+            expect(intersection(set, superset)).to.equal(set);
             expect(intersection(superset, set)).to.eql(set);
         });
 
@@ -169,16 +169,16 @@ describe("set", () => {
     describe("union", () => {
 
         it("returns the union of two sets", () => {
-            expect(union(set, set)).to.eql(set);
+            expect(union(set, set)).to.equal(set);
             expect(union(disjoint1, set)).to.eql(["a", "b", "c", "d", "e", "f"]);
             expect(union(set, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
             expect(union(disjoint2, set)).to.eql(["b", "c", "d", "e", "f", "g"]);
             expect(union(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(union(empty, empty)).to.eql(empty);
-            expect(union(set, empty)).to.eql(set);
+            expect(union(empty, empty)).to.equal(empty);
+            expect(union(set, empty)).to.equal(set);
             expect(union(empty, set)).to.eql(set);
             expect(union(set, superset)).to.eql(superset);
-            expect(union(superset, set)).to.eql(superset);
+            expect(union(superset, set)).to.equal(superset);
         });
 
     });

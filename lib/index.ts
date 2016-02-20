@@ -48,28 +48,19 @@ function merge<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>
     return result;
 }
 
+function mergeShared<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>, setACallback: SetCallback<V, Set<V>>, setBCallback: SetCallback<V, Set<V>>): Set<V> {
+    const result = merge(setA, setB, callback, setACallback, setBCallback);
+    if (setA.length === result.length) {
+        return setA;
+    }
+    return result;
+}
+
 
 // set API.
 
 export function add<V>(set: Set<V>, key: V): Set<V> {
-    let len = set.length;
-    const result = [] as Set<V>;
-    let index: number = 0;
-    for (; index < len; index++) {
-        if (set[index] === key) {
-            return set;
-        } else if (set[index] > key) {
-            result.push(key);
-            break;
-        }
-        result.push(set[index]);
-    }
-    if (index === len) {
-        result.push(key);
-    } else {
-        copy(set, index, result);
-    }
-    return result;
+    return union(set, [key] as Set<V>);
 }
 
 export function create<V>(): Set<V> {
@@ -83,7 +74,7 @@ function differenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return merge(setA, setB, differenceCallback, copy, alwaysTrue);
+    return mergeShared(setA, setB, differenceCallback, copy, alwaysTrue);
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
@@ -131,7 +122,7 @@ function intersectionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return merge(setA, setB, intersectionCallback, alwaysTrue, alwaysTrue);
+    return mergeShared(setA, setB, intersectionCallback, alwaysTrue, alwaysTrue);
 }
 
 function isDisjointCallback<V>(valueA: V, valueB: V): boolean {
@@ -155,19 +146,7 @@ export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
 }
 
 export function remove<V>(set: Set<V>, key: V): Set<V> {
-    let len = set.length;
-    const result = [] as Set<V>;
-    let index: number = 0;
-    for (; index < len; index++) {
-        const value = set[index];
-        if (value === key) {
-            copy(set, index + 1, result);
-            return result;
-        }
-        result.push(value);
-    }
-    // Return the original set for value equality.
-    return set;
+    return difference(set, [key] as Set<V>);
 }
 
 function symmetricDifferenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
@@ -191,5 +170,5 @@ function unionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return merge(setA, setB, unionCallback, copy, copy);
+    return mergeShared(setA, setB, unionCallback, copy, copy);
 }
