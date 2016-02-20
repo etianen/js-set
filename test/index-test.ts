@@ -78,10 +78,10 @@ describe("set", () => {
             expect(intersection(disjoint2, set)).to.eql(empty);
             expect(intersection(set, disjoint2)).to.eql(empty);
             expect(intersection(empty, empty)).to.equal(empty);
-            expect(intersection(set, empty)).to.eql(empty);
+            expect(intersection(set, empty)).to.equal(empty);
             expect(intersection(empty, set)).to.equal(empty);
             expect(intersection(set, superset)).to.equal(set);
-            expect(intersection(superset, set)).to.eql(set);
+            expect(intersection(superset, set)).to.equal(set);
         });
 
     });
@@ -176,8 +176,8 @@ describe("set", () => {
             expect(union(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
             expect(union(empty, empty)).to.equal(empty);
             expect(union(set, empty)).to.equal(set);
-            expect(union(empty, set)).to.eql(set);
-            expect(union(set, superset)).to.eql(superset);
+            expect(union(empty, set)).to.equal(set);
+            expect(union(set, superset)).to.equal(superset);
             expect(union(superset, set)).to.equal(superset);
         });
 

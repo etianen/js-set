@@ -48,10 +48,9 @@ function merge<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>
     return result;
 }
 
-function mergeShared<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>, setACallback: SetCallback<V, Set<V>>, setBCallback: SetCallback<V, Set<V>>): Set<V> {
-    const result = merge(setA, setB, callback, setACallback, setBCallback);
-    if (setA.length === result.length) {
-        return setA;
+function preserveReference<V>(set: Set<V>, result: Set<V>): Set<V> {
+    if (set.length === result.length) {
+        return set;
     }
     return result;
 }
@@ -74,7 +73,7 @@ function differenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return mergeShared(setA, setB, differenceCallback, copy, alwaysTrue);
+    return preserveReference(setA, merge(setA, setB, differenceCallback, copy, alwaysTrue));
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
@@ -122,7 +121,7 @@ function intersectionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return mergeShared(setA, setB, intersectionCallback, alwaysTrue, alwaysTrue);
+    return preserveReference(setA, preserveReference(setB, merge(setA, setB, intersectionCallback, alwaysTrue, alwaysTrue)));
 }
 
 function isDisjointCallback<V>(valueA: V, valueB: V): boolean {
@@ -170,5 +169,5 @@ function unionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return mergeShared(setA, setB, unionCallback, copy, copy);
+    return preserveReference(setA, preserveReference(setB, merge(setA, setB, unionCallback, copy, copy)));
 }
