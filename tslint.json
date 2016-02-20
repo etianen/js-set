@@ -45,6 +45,7 @@
         true,
         "react"
     ],
+    "no-use-before-declare": true,
     "no-var-keyword": true,
     "one-line": [
       true,
