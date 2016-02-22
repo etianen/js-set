@@ -2,60 +2,8 @@ export interface Set<V> extends Array<V> {
     isSet: void;
 }
 
-type EntryCallback<V, C> = (valueA: V, valueB: V, context: C) => boolean | void;
 
-type SetCallback<V, C> = (set: Set<V>, index: number, context: C) => boolean | void;
-
-function copy<V>(set: Set<V>, index: number, result: Set<V>): void {
-    for (const len = set.length; index < len; index++) {
-        result.push(set[index]);
-    }
-}
-
-function noop(): void {
-    // Do nothing.
-}
-
-function isIncomplete<V>(set: Set<V>, index: number): boolean {
-    return set.length !== index;
-}
-
-function iter<V, C>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, C>, setACallback: SetCallback<V, C>, setBCallback: SetCallback<V, C>, context?: C): boolean {
-    const lenA = setA.length;
-    const lenB = setB.length;
-    let indexA = 0;
-    let indexB = 0;
-    while (indexA < lenA && indexB < lenB) {
-        const valueA = setA[indexA];
-        const valueB = setB[indexB];
-        if (valueA <= valueB) {
-            indexA++;
-        }
-        if (valueB <= valueA) {
-            indexB++;
-        }
-        if (callback(valueA, valueB, context)) {
-            return false;
-        }
-    }
-    return !setACallback(setA, indexA, context) && !setBCallback(setB, indexB, context);
-}
-
-function merge<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>, setACallback: SetCallback<V, Set<V>>, setBCallback: SetCallback<V, Set<V>>): Set<V> {
-    const result = [] as Set<V>;
-    iter(setA, setB, callback, setACallback, setBCallback, result);
-    return result;
-}
-
-function preserveReference<V>(set: Set<V>, result: Set<V>): Set<V> {
-    if (set.length === result.length) {
-        return set;
-    }
-    return result;
-}
-
-
-// set API.
+// API.
 
 export function add<V>(set: Set<V>, key: V): Set<V> {
     return union(set, [key] as Set<V>);
@@ -65,14 +13,32 @@ export function create<V>(): Set<V> {
     return [] as Set<V>;
 }
 
-function differenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
-    if (valueA < valueB) {
-        result.push(valueA);
-    }
-}
-
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return preserveReference(setA, merge(setA, setB, differenceCallback, copy, noop));
+    const result = [] as Set<V>;
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            if (valueA < valueB) {
+                result.push(valueA);
+            }
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            indexB++;
+        }
+    }
+    for (; indexA < lenA; indexA++) {
+        result.push(setA[indexA]);
+    }
+    if (lenA === result.length) {
+        return setA;
+    }
+    return result;
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
@@ -113,30 +79,74 @@ export function has<V>(set: Set<V>, key: V): boolean {
     return false;
 }
 
-function intersectionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
-    if (valueA === valueB) {
-        result.push(valueA);
-    }
-}
-
 export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return preserveReference(setA, preserveReference(setB, merge(setA, setB, intersectionCallback, noop, noop)));
-}
-
-function isDisjointCallback<V>(valueA: V, valueB: V): boolean {
-    return valueA === valueB;
+    const result = [] as Set<V>;
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            if (valueA === valueB) {
+                result.push(valueA);
+            }
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            indexB++;
+        }
+    }
+    if (lenA === result.length) {
+        return setA;
+    }
+    if (lenB === result.length) {
+        return setB;
+    }
+    return result;
 }
 
 export function isDisjoint<V>(setA: Set<V>, setB: Set<V>): boolean {
-    return iter(setA, setB, isDisjointCallback, noop, noop);
-}
-
-function isSubsetCallback<V>(valueA: V, valueB: V): boolean {
-    return valueA < valueB;
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            if (valueA === valueB) {
+                return false;
+            }
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            indexB++;
+        }
+    }
+    return true;
 }
 
 export function isSubset<V>(setA: Set<V>, setB: Set<V>): boolean {
-    return iter(setA, setB, isSubsetCallback, isIncomplete, noop);
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            if (valueA < valueB) {
+                return false;
+            }
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            indexB++;
+        }
+    }
+    return indexA === lenA;
 }
 
 export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
@@ -147,26 +157,68 @@ export function remove<V>(set: Set<V>, key: V): Set<V> {
     return difference(set, [key] as Set<V>);
 }
 
-function symmetricDifferenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
-    if (valueA < valueB) {
-        result.push(valueA);
-    } else if (valueB < valueA) {
-        result.push(valueB);
-    }
-}
-
 export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return merge(setA, setB, symmetricDifferenceCallback, copy, copy);
-}
-
-function unionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
-    if (valueA <= valueB) {
-        result.push(valueA);
-    } else if (valueB < valueA) {
-        result.push(valueB);
+    const result = [] as Set<V>;
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            if (valueA < valueB) {
+                result.push(valueA);
+            }
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            if (valueB < valueA) {
+                result.push(valueB);
+            }
+            indexB++;
+        }
     }
+    for (; indexA < lenA; indexA++) {
+        result.push(setA[indexA]);
+    }
+    for (; indexB < lenB; indexB++) {
+        result.push(setB[indexB]);
+    }
+    return result;
 }
 
 export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return preserveReference(setA, preserveReference(setB, merge(setA, setB, unionCallback, copy, copy)));
+    const result = [] as Set<V>;
+    const lenA = setA.length;
+    const lenB = setB.length;
+    let indexA = 0;
+    let indexB = 0;
+    while (indexA < lenA && indexB < lenB) {
+        const valueA = setA[indexA];
+        const valueB = setB[indexB];
+        if (valueA <= valueB) {
+            result.push(valueA);
+            indexA++;
+        }
+        if (valueB <= valueA) {
+            if (valueB < valueA) {
+                result.push(valueB);
+            }
+            indexB++;
+        }
+    }
+    for (; indexA < lenA; indexA++) {
+        result.push(setA[indexA]);
+    }
+    for (; indexB < lenB; indexB++) {
+        result.push(setB[indexB]);
+    }
+    if (lenA === result.length) {
+        return setA;
+    }
+    if (lenB === result.length) {
+        return setB;
+    }
+    return result;
 }
