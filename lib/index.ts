@@ -76,6 +76,9 @@ export function from<V>(keys: Array<V>): Set<V> {
 export function has<V>(set: Set<V>, key: V): boolean {
     let min = 0;
     let max = set.length;
+    if (max === 0) {
+        return false;
+    }
     while (min <= max) {
         const index = Math.floor((min + max) / 2);
         const value = set[index];
