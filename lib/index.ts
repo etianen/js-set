@@ -6,7 +6,23 @@ export interface Set<V> extends Array<V> {
 // API.
 
 export function add<V>(set: Set<V>, key: V): Set<V> {
-    return union(set, [key] as Set<V>);
+    const result = [] as Set<V>;
+    for (let index = 0, len = set.length; index < len; index++) {
+        const value = set[index];
+        if (value === key) {
+            return set;
+        }
+        if (value > key) {
+            result.push(key);
+            for (; index < len; index++) {
+                result.push(set[index]);
+            }
+            return result;
+        }
+        result.push(value);
+    }
+    result.push(key);
+    return result;
 }
 
 export function create<V>(): Set<V> {
@@ -69,7 +85,8 @@ export function has<V>(set: Set<V>, key: V): boolean {
         const value = set[index];
         if (value === key) {
             return true;
-        } else if (value > key) {
+        }
+        if (value > key) {
             newIndex = index / 2;
         } else {
             newIndex = (index + len) / 2;
@@ -154,7 +171,21 @@ export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
 }
 
 export function remove<V>(set: Set<V>, key: V): Set<V> {
-    return difference(set, [key] as Set<V>);
+    const result = [] as Set<V>;
+    for (let index = 0, len = set.length; index < len; index++) {
+        const value = set[index];
+        if (value === key) {
+            for (index++; index < len; index++) {
+                result.push(set[index]);
+            }
+            return result;
+        }
+        if (value > key) {
+            return set;
+        }
+        result.push(value);
+    }
+    return set;
 }
 
 export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
