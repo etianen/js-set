@@ -74,24 +74,19 @@ export function from<V>(keys: Array<V>): Set<V> {
 }
 
 export function has<V>(set: Set<V>, key: V): boolean {
-    const len = set.length;
-    if (len === 0) {
-        return false;
-    }
-    let index: number;
-    let newIndex = Math.floor(len / 2);
-    while (index !== newIndex) {
-        index = newIndex;
+    let min = 0;
+    let max = set.length;
+    while (min <= max) {
+        const index = Math.floor((min + max) / 2);
         const value = set[index];
         if (value === key) {
             return true;
         }
         if (value > key) {
-            newIndex = index / 2;
+            max = index - 1;
         } else {
-            newIndex = (index + len) / 2;
+            min = index + 1;
         }
-        newIndex = Math.floor(newIndex);
     }
     return false;
 }
