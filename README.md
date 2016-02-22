@@ -23,8 +23,8 @@ import * as set from "@etianen/set";
 
 const setA = set.from([1, 2, 3]);
 const setB = set.from([2, 3, 4]);
-set.union(setA, setB);  // => [1, 2, 3, 4];
-set.intersection(setA, setB);  // => [2, 3];
+set.union(setA, setB);  // => [1, 2, 3, 4]
+set.intersection(setA, setB);  // => [2, 3]
 ```
 
 
