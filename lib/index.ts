@@ -4,21 +4,20 @@ export interface Set<V> extends Array<V> {
 
 type EntryCallback<V, C> = (valueA: V, valueB: V, context: C) => boolean | void;
 
-type SetCallback<V, C> = (set: Set<V>, index: number, context: C) => boolean;
+type SetCallback<V, C> = (set: Set<V>, index: number, context: C) => boolean | void;
 
-function copy<V>(set: Set<V>, index: number, result: Set<V>): boolean {
+function copy<V>(set: Set<V>, index: number, result: Set<V>): void {
     for (const len = set.length; index < len; index++) {
         result.push(set[index]);
     }
-    return true;
 }
 
-function alwaysTrue() {
-    return true;
+function noop(): void {
+    // Do nothing.
 }
 
-function isComplete<V>(set: Set<V>, index: number): boolean {
-    return set.length === index;
+function isIncomplete<V>(set: Set<V>, index: number): boolean {
+    return set.length !== index;
 }
 
 function iter<V, C>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, C>, setACallback: SetCallback<V, C>, setBCallback: SetCallback<V, C>, context?: C): boolean {
@@ -35,11 +34,11 @@ function iter<V, C>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, C>, s
         if (valueB <= valueA) {
             indexB++;
         }
-        if (callback(valueA, valueB, context) === false) {
+        if (callback(valueA, valueB, context)) {
             return false;
         }
     }
-    return setACallback(setA, indexA, context) && setBCallback(setB, indexB, context);
+    return !setACallback(setA, indexA, context) && !setBCallback(setB, indexB, context);
 }
 
 function merge<V>(setA: Set<V>, setB: Set<V>, callback: EntryCallback<V, Set<V>>, setACallback: SetCallback<V, Set<V>>, setBCallback: SetCallback<V, Set<V>>): Set<V> {
@@ -73,7 +72,7 @@ function differenceCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return preserveReference(setA, merge(setA, setB, differenceCallback, copy, alwaysTrue));
+    return preserveReference(setA, merge(setA, setB, differenceCallback, copy, noop));
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
@@ -121,23 +120,23 @@ function intersectionCallback<V>(valueA: V, valueB: V, result: Set<V>): void {
 }
 
 export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    return preserveReference(setA, preserveReference(setB, merge(setA, setB, intersectionCallback, alwaysTrue, alwaysTrue)));
+    return preserveReference(setA, preserveReference(setB, merge(setA, setB, intersectionCallback, noop, noop)));
 }
 
 function isDisjointCallback<V>(valueA: V, valueB: V): boolean {
-    return valueA !== valueB;
+    return valueA === valueB;
 }
 
 export function isDisjoint<V>(setA: Set<V>, setB: Set<V>): boolean {
-    return iter(setA, setB, isDisjointCallback, alwaysTrue, alwaysTrue);
+    return iter(setA, setB, isDisjointCallback, noop, noop);
 }
 
 function isSubsetCallback<V>(valueA: V, valueB: V): boolean {
-    return valueA >= valueB;
+    return valueA < valueB;
 }
 
 export function isSubset<V>(setA: Set<V>, setB: Set<V>): boolean {
-    return iter(setA, setB, isSubsetCallback, isComplete, alwaysTrue);
+    return iter(setA, setB, isSubsetCallback, isIncomplete, noop);
 }
 
 export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
