@@ -169,19 +169,26 @@ export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
 }
 
 export function remove<V>(set: Set<V>, key: V): Set<V> {
+    const len = set.length;
+    if (len === 0) {
+        return set;
+    }
+    // Pre-allocate result to the correct length. Might save a few cycles...
     const result = [] as Set<V>;
-    for (let index = 0, len = set.length; index < len; index++) {
+    result.length = len - 1;
+    for (let index = 0; index < len; index++) {
         const value = set[index];
         if (value === key) {
+            // Fast inner loop to finish the array copy.
             for (index++; index < len; index++) {
-                result.push(set[index]);
+                result[index - 1] = set[index];
             }
             return result;
         }
         if (value > key) {
             return set;
         }
-        result.push(value);
+        result[index] = value;
     }
     return set;
 }
