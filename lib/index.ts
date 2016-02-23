@@ -198,9 +198,17 @@ export function remove<V>(set: Set<V>, key: V): Set<V> {
 }
 
 export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    const result = [] as Set<V>;
+    // Shortcut the whole operation if either set is empty.
     const lenA = setA.length;
+    if (lenA === 0) {
+        return setB;
+    }
     const lenB = setB.length;
+    if (lenB === 0) {
+        return setA;
+    }
+    // Perform the difference.
+    const result = [] as Set<V>;
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -229,9 +237,17 @@ export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
 }
 
 export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
-    const result = [] as Set<V>;
+    // Shortcut the whole operation if either set is empty.
     const lenA = setA.length;
+    if (lenA === 0) {
+        return setB;
+    }
     const lenB = setB.length;
+    if (lenB === 0) {
+        return setA;
+    }
+    // Perform the union.
+    const result = [] as Set<V>;
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -254,6 +270,7 @@ export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     for (; indexB < lenB; indexB++) {
         result.push(setB[indexB]);
     }
+    // Return an original reference if possible.
     if (lenA === result.length) {
         return setA;
     }

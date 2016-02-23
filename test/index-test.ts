@@ -157,9 +157,9 @@ describe("set", () => {
             expect(symmetricDifference(set, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
             expect(symmetricDifference(disjoint2, set)).to.eql(["b", "c", "d", "e", "f", "g"]);
             expect(symmetricDifference(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(symmetricDifference(empty, empty)).to.eql(empty);
-            expect(symmetricDifference(set, empty)).to.eql(set);
-            expect(symmetricDifference(empty, set)).to.eql(set);
+            expect(symmetricDifference(empty, empty)).to.equal(empty);
+            expect(symmetricDifference(set, empty)).to.equal(set);
+            expect(symmetricDifference(empty, set)).to.equal(set);
             expect(symmetricDifference(set, superset)).to.eql(["a", "g"]);
             expect(symmetricDifference(superset, set)).to.eql(["a", "g"]);
         });
