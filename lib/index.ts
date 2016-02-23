@@ -6,22 +6,26 @@ export interface Set<V> extends Array<V> {
 // API.
 
 export function add<V>(set: Set<V>, key: V): Set<V> {
+    const len = set.length;
+    // Pre-allocate result to correct length.
     const result = [] as Set<V>;
-    for (let index = 0, len = set.length; index < len; index++) {
+    result.length = len + 1;
+    for (let index = 0; index < len; index++) {
         const value = set[index];
         if (value === key) {
             return set;
         }
         if (value > key) {
-            result.push(key);
+            result[index] = key;
+            // Fast inner loop to finish the array copy.
             for (; index < len; index++) {
-                result.push(set[index]);
+                result[index + 1] = set[index];
             }
             return result;
         }
-        result.push(value);
+        result[index] = value;
     }
-    result.push(key);
+    result[len] = key;
     return result;
 }
 
