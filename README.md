@@ -35,6 +35,7 @@ In all the functions below:
 * The source arguments are never mutated.
 * The input arrays are assumed to be unique and sorted.
 * If possible, the function will return one of the input arrays if the operation is a no-op. This helps preserve reference equality.
+* If the result is a `Set`, it will be frozen.
 
 
 ### Set

@@ -2,6 +2,13 @@ export interface Set<V> extends Array<V> {
     isSet: void;
 }
 
+// Helpers.
+
+const asSet: <V>(result: Array<V>) => Set<V> = Object.freeze;
+
+const EMPTY_SET: Set<any> = asSet([]);
+
+
 // API.
 
 // General optimization: Using array index assignment is faster than .push(), if it's trivial to calculate.
@@ -11,7 +18,7 @@ export interface Set<V> extends Array<V> {
 export function add<V>(set: Set<V>, key: V): Set<V> {
     const len = set.length;
     // Optimization: Pre-allocate result to correct length.
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     result.length = len + 1;
     for (let index = 0; index < len; index++) {
         // Preserve reference equality and shortcut the loop.
@@ -24,16 +31,16 @@ export function add<V>(set: Set<V>, key: V): Set<V> {
             for (; index < len; index++) {
                 result[index + 1] = set[index];
             }
-            return result;
+            return asSet(result);
         }
         result[index] = set[index];
     }
     result[len] = key;
-    return result;
+    return asSet(result);
 }
 
-export function create<V>(): Set<V> {
-    return [] as Set<V>;
+export function empty<V>(): Set<V> {
+    return EMPTY_SET;
 }
 
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
@@ -47,7 +54,7 @@ export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === 0) {
         return setA;
     }
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -69,22 +76,25 @@ export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenA === result.length) {
         return setA;
     }
-    return result;
+    return asSet(result);
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
     const len = keys.length;
+    if (len === 0) {
+        return EMPTY_SET;
+    }
     if (len <= 1) {
-        return keys as Set<V>;
+        return asSet(keys.slice());
     }
     const sortedKeys = keys.slice().sort();
-    const result = [sortedKeys[0]] as Set<V>;
+    const result: Array<V> = [sortedKeys[0]];
     for (let index = 1; index < len; index++) {
         if (sortedKeys[index] !== sortedKeys[index - 1]) {
             result.push(sortedKeys[index]);
         }
     }
-    return result;
+    return asSet(result);
 }
 
 export function has<V>(set: Set<V>, key: V): boolean {
@@ -118,7 +128,7 @@ export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === 0) {
         return setB;
     }
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -140,7 +150,7 @@ export function intersection<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === result.length) {
         return setB;
     }
-    return result;
+    return asSet(result);
 }
 
 export function isDisjoint<V>(setA: Set<V>, setB: Set<V>): boolean {
@@ -187,13 +197,17 @@ export function isSuperset<V>(setA: Set<V>, setB: Set<V>): boolean {
     return isSubset(setB, setA);
 }
 
+export function of<V>(...keys: Array<V>): Set<V> {
+    return from(keys);
+}
+
 export function remove<V>(set: Set<V>, key: V): Set<V> {
     const len = set.length;
     if (len === 0) {
         return set;
     }
     // Pre-allocate result to the correct length. Might save a few cycles...
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     result.length = len - 1;
     for (let index = 0; index < len; index++) {
         if (set[index] === key) {
@@ -201,7 +215,7 @@ export function remove<V>(set: Set<V>, key: V): Set<V> {
             for (index++; index < len; index++) {
                 result[index - 1] = set[index];
             }
-            return result;
+            return asSet(result);
         }
         // Preserve reference equality.
         if (set[index] > key) {
@@ -221,7 +235,7 @@ export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === 0) {
         return setA;
     }
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -245,7 +259,7 @@ export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     for (; indexB < lenB; indexB++) {
         result.push(setB[indexB]);
     }
-    return result;
+    return asSet(result);
 }
 
 export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
@@ -259,7 +273,7 @@ export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === 0) {
         return setA;
     }
-    const result = [] as Set<V>;
+    const result: Array<V> = [];
     let indexA = 0;
     let indexB = 0;
     while (indexA < lenA && indexB < lenB) {
@@ -288,5 +302,5 @@ export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     if (lenB === result.length) {
         return setB;
     }
-    return result;
+    return asSet(result);
 }

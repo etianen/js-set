@@ -1,31 +1,31 @@
 import {expect} from "chai";
-import {Set, add, create, difference, from, has, intersection, isDisjoint, isSubset, isSuperset, remove, symmetricDifference, union} from "../lib/index";
+import * as set from "../lib/index";
 
 
 describe("set", () => {
 
-    const disjoint1 = ["a"] as Set<string>;
-    const disjoint2 = ["g"]  as Set<string>;
-    const empty = [] as Set<string>;
-    const set = ["b", "c", "d", "e", "f"] as Set<string>;
-    const superset = ["a", "b", "c", "d", "e", "f", "g"] as Set<string>;
+    const disjoint1: set.Set<string> = set.of("a");
+    const disjoint2: set.Set<string> = set.of("g");
+    const empty: set.Set<string> = set.empty<string>();
+    const subset: set.Set<string> = set.of("b", "c", "d", "e", "f");
+    const superset: set.Set<string> = set.of("a", "b", "c", "d", "e", "f", "g");
 
     describe("add", () => {
 
         it("adds a value to the set", () => {
-            expect(add(set, "a")).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(add(set, "b")).to.equal(set);
-            expect(add(set, "f")).to.equal(set);
-            expect(add(set, "g")).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(add(empty, "a")).to.eql(["a"]);
+            expect(set.add(subset, "a")).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(set.add(subset, "b")).to.equal(subset);
+            expect(set.add(subset, "f")).to.equal(subset);
+            expect(set.add(subset, "g")).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(set.add(empty, "a")).to.eql(["a"]);
         });
 
     });
 
-    describe("create", () => {
+    describe("empty", () => {
 
-        it("creates a new set", () => {
-            expect(create()).to.eql(empty);
+        it("creates a new empty set", () => {
+            expect(set.empty()).to.eql(empty);
         });
 
     });
@@ -33,16 +33,16 @@ describe("set", () => {
     describe("difference", () => {
 
         it("returns all keys in the first set that are not in the second set", () => {
-            expect(difference(set, set)).to.eql(empty);
-            expect(difference(disjoint1, set)).to.equal(disjoint1);
-            expect(difference(set, disjoint1)).to.equal(set);
-            expect(difference(disjoint2, set)).to.equal(disjoint2);
-            expect(difference(set, disjoint2)).to.equal(set);
-            expect(difference(empty, empty)).to.equal(empty);
-            expect(difference(set, empty)).to.equal(set);
-            expect(difference(empty, set)).to.equal(empty);
-            expect(difference(set, superset)).to.eql(empty);
-            expect(difference(superset, set)).to.eql(["a", "g"]);
+            expect(set.difference(subset, subset)).to.eql(empty);
+            expect(set.difference(disjoint1, subset)).to.equal(disjoint1);
+            expect(set.difference(subset, disjoint1)).to.equal(subset);
+            expect(set.difference(disjoint2, subset)).to.equal(disjoint2);
+            expect(set.difference(subset, disjoint2)).to.equal(subset);
+            expect(set.difference(empty, empty)).to.equal(empty);
+            expect(set.difference(subset, empty)).to.equal(subset);
+            expect(set.difference(empty, subset)).to.equal(empty);
+            expect(set.difference(subset, superset)).to.eql(empty);
+            expect(set.difference(superset, subset)).to.eql(["a", "g"]);
         });
 
     });
@@ -50,8 +50,9 @@ describe("set", () => {
     describe("from", () => {
 
         it("creates a set from an array", () => {
-            expect(from(empty)).to.equal(empty);
-            expect(from(["b", "a", "a", "c", "b"])).to.eql(["a", "b", "c"]);
+            expect(set.from(empty)).to.equal(empty);
+            expect(set.from(disjoint1)).to.eql(disjoint1);
+            expect(set.from(["b", "a", "a", "c", "b"])).to.eql(["a", "b", "c"]);
         });
 
     });
@@ -59,12 +60,12 @@ describe("set", () => {
     describe("has", () => {
 
         it("returns true if the set contains the value", () => {
-            for (const key of set) {
-                expect(has(set, key)).to.be.true;
+            for (const key of subset) {
+                expect(set.has(subset, key)).to.be.true;
             }
-            expect(has(set, "a")).to.be.false;
-            expect(has(set, "g")).to.be.false;
-            expect(has(empty, "a")).to.be.false;
+            expect(set.has(subset, "a")).to.be.false;
+            expect(set.has(subset, "g")).to.be.false;
+            expect(set.has(empty, "a")).to.be.false;
         });
 
     });
@@ -72,16 +73,16 @@ describe("set", () => {
     describe("intersection", () => {
 
         it("returns the intersection of two sets", () => {
-            expect(intersection(set, set)).to.equal(set);
-            expect(intersection(disjoint1, set)).to.eql(empty);
-            expect(intersection(set, disjoint1)).to.eql(empty);
-            expect(intersection(disjoint2, set)).to.eql(empty);
-            expect(intersection(set, disjoint2)).to.eql(empty);
-            expect(intersection(empty, empty)).to.equal(empty);
-            expect(intersection(set, empty)).to.equal(empty);
-            expect(intersection(empty, set)).to.equal(empty);
-            expect(intersection(set, superset)).to.equal(set);
-            expect(intersection(superset, set)).to.equal(set);
+            expect(set.intersection(subset, subset)).to.equal(subset);
+            expect(set.intersection(disjoint1, subset)).to.eql(empty);
+            expect(set.intersection(subset, disjoint1)).to.eql(empty);
+            expect(set.intersection(disjoint2, subset)).to.eql(empty);
+            expect(set.intersection(subset, disjoint2)).to.eql(empty);
+            expect(set.intersection(empty, empty)).to.equal(empty);
+            expect(set.intersection(subset, empty)).to.equal(empty);
+            expect(set.intersection(empty, subset)).to.equal(empty);
+            expect(set.intersection(subset, superset)).to.equal(subset);
+            expect(set.intersection(superset, subset)).to.equal(subset);
         });
 
     });
@@ -89,16 +90,16 @@ describe("set", () => {
     describe("isDisjoint", () => {
 
         it("returns true if the sets have no key in common", () => {
-            expect(isDisjoint(set, set)).to.be.false;
-            expect(isDisjoint(disjoint1, set)).to.be.true;
-            expect(isDisjoint(set, disjoint1)).to.be.true;
-            expect(isDisjoint(disjoint2, set)).to.be.true;
-            expect(isDisjoint(set, disjoint2)).to.be.true;
-            expect(isDisjoint(empty, empty)).to.be.true;
-            expect(isDisjoint(set, empty)).to.be.true;
-            expect(isDisjoint(empty, set)).to.be.true;
-            expect(isDisjoint(set, superset)).to.be.false;
-            expect(isDisjoint(superset, set)).to.be.false;
+            expect(set.isDisjoint(subset, subset)).to.be.false;
+            expect(set.isDisjoint(disjoint1, subset)).to.be.true;
+            expect(set.isDisjoint(subset, disjoint1)).to.be.true;
+            expect(set.isDisjoint(disjoint2, subset)).to.be.true;
+            expect(set.isDisjoint(subset, disjoint2)).to.be.true;
+            expect(set.isDisjoint(empty, empty)).to.be.true;
+            expect(set.isDisjoint(subset, empty)).to.be.true;
+            expect(set.isDisjoint(empty, subset)).to.be.true;
+            expect(set.isDisjoint(subset, superset)).to.be.false;
+            expect(set.isDisjoint(superset, subset)).to.be.false;
         });
 
     });
@@ -106,16 +107,16 @@ describe("set", () => {
     describe("isSubset", () => {
 
         it("returns true if the first set is a subset of the second", () => {
-            expect(isSubset(set, set)).to.be.true;
-            expect(isSubset(disjoint1, set)).to.be.false;
-            expect(isSubset(set, disjoint1)).to.be.false;
-            expect(isSubset(disjoint2, set)).to.be.false;
-            expect(isSubset(set, disjoint2)).to.be.false;
-            expect(isSubset(empty, empty)).to.be.true;
-            expect(isSubset(set, empty)).to.be.false;
-            expect(isSubset(empty, set)).to.be.true;
-            expect(isSubset(set, superset)).to.be.true;
-            expect(isSubset(superset, set)).to.be.false;
+            expect(set.isSubset(subset, subset)).to.be.true;
+            expect(set.isSubset(disjoint1, subset)).to.be.false;
+            expect(set.isSubset(subset, disjoint1)).to.be.false;
+            expect(set.isSubset(disjoint2, subset)).to.be.false;
+            expect(set.isSubset(subset, disjoint2)).to.be.false;
+            expect(set.isSubset(empty, empty)).to.be.true;
+            expect(set.isSubset(subset, empty)).to.be.false;
+            expect(set.isSubset(empty, subset)).to.be.true;
+            expect(set.isSubset(subset, superset)).to.be.true;
+            expect(set.isSubset(superset, subset)).to.be.false;
         });
 
     });
@@ -123,16 +124,16 @@ describe("set", () => {
     describe("isSuperset", () => {
 
         it("returns true if the first set is a superset of the second", () => {
-            expect(isSuperset(set, set)).to.be.true;
-            expect(isSuperset(disjoint1, set)).to.be.false;
-            expect(isSuperset(set, disjoint1)).to.be.false;
-            expect(isSuperset(disjoint2, set)).to.be.false;
-            expect(isSuperset(set, disjoint2)).to.be.false;
-            expect(isSuperset(empty, empty)).to.be.true;
-            expect(isSuperset(set, empty)).to.be.true;
-            expect(isSuperset(empty, set)).to.be.false;
-            expect(isSuperset(set, superset)).to.be.false;
-            expect(isSuperset(superset, set)).to.be.true;
+            expect(set.isSuperset(subset, subset)).to.be.true;
+            expect(set.isSuperset(disjoint1, subset)).to.be.false;
+            expect(set.isSuperset(subset, disjoint1)).to.be.false;
+            expect(set.isSuperset(disjoint2, subset)).to.be.false;
+            expect(set.isSuperset(subset, disjoint2)).to.be.false;
+            expect(set.isSuperset(empty, empty)).to.be.true;
+            expect(set.isSuperset(subset, empty)).to.be.true;
+            expect(set.isSuperset(empty, subset)).to.be.false;
+            expect(set.isSuperset(subset, superset)).to.be.false;
+            expect(set.isSuperset(superset, subset)).to.be.true;
         });
 
     });
@@ -140,11 +141,11 @@ describe("set", () => {
     describe("remove", () => {
 
         it("removes a value from the set", () => {
-            expect(remove(set, "a")).to.equal(set);
-            expect(remove(set, "b")).to.eql(["c", "d", "e", "f"]);
-            expect(remove(set, "f")).to.eql(["b", "c", "d", "e"]);
-            expect(remove(set, "g")).to.equal(set);
-            expect(remove(empty, "a")).to.equal(empty);
+            expect(set.remove(subset, "a")).to.equal(subset);
+            expect(set.remove(subset, "b")).to.eql(["c", "d", "e", "f"]);
+            expect(set.remove(subset, "f")).to.eql(["b", "c", "d", "e"]);
+            expect(set.remove(subset, "g")).to.equal(subset);
+            expect(set.remove(empty, "a")).to.equal(empty);
         });
 
     });
@@ -152,16 +153,16 @@ describe("set", () => {
     describe("symmetricDifference", () => {
 
         it("returns the symmetric difference of two sets", () => {
-            expect(symmetricDifference(set, set)).to.eql(empty);
-            expect(symmetricDifference(disjoint1, set)).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(symmetricDifference(set, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(symmetricDifference(disjoint2, set)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(symmetricDifference(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(symmetricDifference(empty, empty)).to.equal(empty);
-            expect(symmetricDifference(set, empty)).to.equal(set);
-            expect(symmetricDifference(empty, set)).to.equal(set);
-            expect(symmetricDifference(set, superset)).to.eql(["a", "g"]);
-            expect(symmetricDifference(superset, set)).to.eql(["a", "g"]);
+            expect(set.symmetricDifference(subset, subset)).to.eql(empty);
+            expect(set.symmetricDifference(disjoint1, subset)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(set.symmetricDifference(subset, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(set.symmetricDifference(disjoint2, subset)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(set.symmetricDifference(subset, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(set.symmetricDifference(empty, empty)).to.equal(empty);
+            expect(set.symmetricDifference(subset, empty)).to.equal(subset);
+            expect(set.symmetricDifference(empty, subset)).to.equal(subset);
+            expect(set.symmetricDifference(subset, superset)).to.eql(["a", "g"]);
+            expect(set.symmetricDifference(superset, subset)).to.eql(["a", "g"]);
         });
 
     });
@@ -169,16 +170,16 @@ describe("set", () => {
     describe("union", () => {
 
         it("returns the union of two sets", () => {
-            expect(union(set, set)).to.equal(set);
-            expect(union(disjoint1, set)).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(union(set, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
-            expect(union(disjoint2, set)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(union(set, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
-            expect(union(empty, empty)).to.equal(empty);
-            expect(union(set, empty)).to.equal(set);
-            expect(union(empty, set)).to.equal(set);
-            expect(union(set, superset)).to.equal(superset);
-            expect(union(superset, set)).to.equal(superset);
+            expect(set.union(subset, subset)).to.equal(subset);
+            expect(set.union(disjoint1, subset)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(set.union(subset, disjoint1)).to.eql(["a", "b", "c", "d", "e", "f"]);
+            expect(set.union(disjoint2, subset)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(set.union(subset, disjoint2)).to.eql(["b", "c", "d", "e", "f", "g"]);
+            expect(set.union(empty, empty)).to.equal(empty);
+            expect(set.union(subset, empty)).to.equal(subset);
+            expect(set.union(empty, subset)).to.equal(subset);
+            expect(set.union(subset, superset)).to.equal(superset);
+            expect(set.union(superset, subset)).to.equal(superset);
         });
 
     });
