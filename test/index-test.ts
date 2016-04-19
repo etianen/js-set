@@ -22,14 +22,6 @@ describe("set", () => {
 
     });
 
-    describe("empty", () => {
-
-        it("creates a new empty set", () => {
-            expect(set.empty()).to.eql(empty);
-        });
-
-    });
-
     describe("difference", () => {
 
         it("returns all keys in the first set that are not in the second set", () => {
@@ -43,6 +35,14 @@ describe("set", () => {
             expect(set.difference(empty, subset)).to.equal(empty);
             expect(set.difference(subset, superset)).to.eql(empty);
             expect(set.difference(superset, subset)).to.eql(["a", "g"]);
+        });
+
+    });
+
+    describe("empty", () => {
+
+        it("creates a new empty set", () => {
+            expect(set.empty()).to.equal(empty);
         });
 
     });

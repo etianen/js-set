@@ -6,6 +6,12 @@ export interface Set<V> extends Array<V> {
 
 const asSet: <V>(result: Array<V>) => Set<V> = Object.freeze;
 
+function copy<V>(result: Array<V>, set: Set<V>, index: number, end: number): void {
+    for (; index < end; index++) {
+        result.push(set[index]);
+    }
+}
+
 const EMPTY_SET: Set<any> = asSet([]);
 
 
@@ -39,10 +45,6 @@ export function add<V>(set: Set<V>, key: V): Set<V> {
     return asSet(result);
 }
 
-export function empty<V>(): Set<V> {
-    return EMPTY_SET;
-}
-
 export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
     const lenA = setA.length;
     // Optimization: Avoid needlessly allocating a result array, only to throw it away.
@@ -69,14 +71,16 @@ export function difference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
+    copy(result, setA, indexA, lenA);
     // Preserve reference equality.
     if (lenA === result.length) {
         return setA;
     }
     return asSet(result);
+}
+
+export function empty<V>(): Set<V> {
+    return EMPTY_SET;
 }
 
 export function from<V>(keys: Array<V>): Set<V> {
@@ -206,7 +210,7 @@ export function remove<V>(set: Set<V>, key: V): Set<V> {
     if (len === 0) {
         return set;
     }
-    // Pre-allocate result to the correct length. Might save a few cycles...
+    // Optimization: Pre-allocate result to the correct length.
     const result: Array<V> = [];
     result.length = len - 1;
     for (let index = 0; index < len; index++) {
@@ -253,12 +257,8 @@ export function symmetricDifference<V>(setA: Set<V>, setB: Set<V>): Set<V> {
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
-    for (; indexB < lenB; indexB++) {
-        result.push(setB[indexB]);
-    }
+    copy(result, setA, indexA, lenA);
+    copy(result, setB, indexB, lenB);
     return asSet(result);
 }
 
@@ -289,12 +289,8 @@ export function union<V>(setA: Set<V>, setB: Set<V>): Set<V> {
             indexB++;
         }
     }
-    for (; indexA < lenA; indexA++) {
-        result.push(setA[indexA]);
-    }
-    for (; indexB < lenB; indexB++) {
-        result.push(setB[indexB]);
-    }
+    copy(result, setA, indexA, lenA);
+    copy(result, setB, indexB, lenB);
     // Preserve reference equality.
     if (lenA === result.length) {
         return setA;

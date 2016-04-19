@@ -66,15 +66,6 @@ function add<V>(set: Set<V>, key: V): Set<V>;
 ```
 
 
-### create()
-
-Creates a new blank set.
-
-``` ts
-function create<V>(): Set<V>;
-```
-
-
 ### difference()
 
 Returns a `Set` of all keys in `setA` that are not in `setB`.
@@ -83,6 +74,15 @@ Returns a `Set` of all keys in `setA` that are not in `setB`.
 
 ``` ts
 function difference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
+```
+
+
+### empty()
+
+Creates a new empty set.
+
+``` ts
+function create<V>(): Set<V>;
 ```
 
 
