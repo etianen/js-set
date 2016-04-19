@@ -82,7 +82,7 @@ function difference<V>(setA: Set<V>, setB: Set<V>): Set<V>;
 Creates a new empty set.
 
 ``` ts
-function create<V>(): Set<V>;
+function empty<V>(): Set<V>;
 ```
 
 
